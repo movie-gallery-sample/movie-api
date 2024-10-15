@@ -1,3 +1,7 @@
+import { config } from 'dotenv';
+
+config();
+
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { CustomValidationPipe } from './validators/custom-validation.pipe';

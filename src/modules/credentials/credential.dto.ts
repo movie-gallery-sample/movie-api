@@ -16,3 +16,18 @@ export class CredentialDto {
     @IsPasswordMatch('password')
     confirmPassword: string
 }
+
+export class LoginRequest {
+    @IsEmail()
+    email: string
+
+    @IsString()
+    @IsNotEmpty()
+    password: string
+}
+
+export class LoginResponse {
+    email: string
+    accessToken: string
+    refreshToken: string
+}
