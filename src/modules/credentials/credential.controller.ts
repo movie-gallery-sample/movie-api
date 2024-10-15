@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
+import { Body, Controller, Get, HttpException, HttpStatus, Post } from "@nestjs/common";
 import { CredentialService } from "./credential.service";
 import { CredentialDto } from "./credential.dto";
 
@@ -13,11 +13,7 @@ export class CredentialController {
 
     @Post()
     async createCredential(@Body() credential: CredentialDto): Promise<string> {
-        if (credential.password !== credential.confirmPassword) {
-            return 'Password does not match to confirmed password'
-        }
-
         const message = await this.credentialService.save(credential);
-        return message;
+        throw new HttpException(message, HttpStatus.CREATED);
     }
 }

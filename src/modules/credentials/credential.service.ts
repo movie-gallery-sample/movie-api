@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CredentialEntity } from "./credential.entity";
 import { Repository } from "typeorm";
@@ -20,12 +20,12 @@ export class CredentialService {
             const isExistedEmail = await this.emailExists(credential.email);
             
             if (isExistedEmail) {
-                throw new Error('Email already exists');
+                throw new HttpException('Email exists !', HttpStatus.BAD_REQUEST);
             }
             await this.credentialRepository.save(credential);
             return "Created a new account successfully !";
         } catch (error) {
-            return error.message || "Something went wrong";
+            throw new HttpException(error.message || 'Something went wrong', HttpStatus.BAD_REQUEST);
         }
     }
 }
