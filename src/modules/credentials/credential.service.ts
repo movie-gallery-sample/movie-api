@@ -68,7 +68,7 @@ export class CredentialService {
       const isExistedEmail = await this.emailExists(credential.email);
       const hashedPassword = await bcrypt.hash(
         credential.password,
-        process.env.SALT_ROUNDS,
+        +process.env.SALT_ROUNDS,
       );
 
       if (isExistedEmail) {

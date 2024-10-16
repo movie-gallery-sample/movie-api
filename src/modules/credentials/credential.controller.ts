@@ -14,7 +14,9 @@ import { CredentialDto, LoginRequest, LoginResponse } from './credential.dto';
 import { JwtService } from '@nestjs/jwt';
 import { JwtExpiredException } from 'src/exceptions/jwt-expired.exception';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('credentials')
 @Controller('credentials')
 export class CredentialController {
   constructor(
@@ -23,12 +25,16 @@ export class CredentialController {
   ) {}
 
   @Post('register')
+  @ApiResponse({ status: HttpStatus.CREATED })
   async createCredential(@Body() credential: CredentialDto): Promise<string> {
     const message = await this.credentialService.create(credential);
     throw new HttpException(message, HttpStatus.CREATED);
   }
 
   @Post('login')
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({ status: HttpStatus.OK })
+  @ApiResponse({ status: HttpStatus.UNAUTHORIZED })
   async login(@Body() body: LoginRequest): Promise<LoginResponse> {
     const credential = await this.credentialService.validateUser(
       body.email,
@@ -52,6 +58,9 @@ export class CredentialController {
   }
 
   @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({ status: HttpStatus.OK })
+  @ApiResponse({ status: HttpStatus.UNAUTHORIZED })
   async refresh(@Body() body: { refreshToken: string }) {
     const refreshToken = body.refreshToken;
 
@@ -77,6 +86,8 @@ export class CredentialController {
 
   @Post('/logout')
   @UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: HttpStatus.OK })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST })
   async logout(@Headers('authorization') authHeader: string) {
     const token = authHeader.split(' ')[1];
     if (this.credentialService.logout(token)) {
