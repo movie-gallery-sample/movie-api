@@ -1,15 +1,19 @@
 import {
   Body,
   Controller,
+  Headers,
+  HttpCode,
   HttpException,
   HttpStatus,
   Post,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { CredentialService } from './credential.service';
 import { CredentialDto, LoginRequest, LoginResponse } from './credential.dto';
 import { JwtService } from '@nestjs/jwt';
 import { JwtExpiredException } from 'src/exceptions/jwt-expired.exception';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('credentials')
 export class CredentialController {
@@ -34,7 +38,7 @@ export class CredentialController {
       throw new UnauthorizedException('Wrong email or password');
     }
 
-    const payload = { username: credential.email };
+    const payload = { email: credential.email };
 
     const accessToken = await this.jwtService.signAsync(payload);
 
@@ -63,11 +67,22 @@ export class CredentialController {
     }
 
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('User does not exist');
     }
 
-    const newAccessToken = this.jwtService.sign({ username: user.username });
+    const newAccessToken = this.jwtService.sign({ email: user.email });
 
     return { accessToken: newAccessToken };
+  }
+
+  @Post('/logout')
+  @UseGuards(JwtAuthGuard)
+  async logout(@Headers('authorization') authHeader: string) {
+    const token = authHeader.split(' ')[1];
+    if (this.credentialService.logout(token)) {
+      return new HttpException('Logout successfully !', HttpStatus.OK);
+    }
+
+    return new HttpException('Logout failed !', HttpStatus.BAD_REQUEST);
   }
 }

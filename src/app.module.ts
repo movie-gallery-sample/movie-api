@@ -2,8 +2,10 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CredentialEntity } from './modules/credentials/credential.entity';
 import { CredentialModule } from './modules/credentials/credential.module';
+import { MovieModule } from './modules/movies/movie.module';
+import { typeOrmEntities } from './imports.entities';
+import { importModules } from './imports.modules';
 
 @Module({
   imports: [
@@ -14,10 +16,10 @@ import { CredentialModule } from './modules/credentials/credential.module';
       username: 'postgres',
       password: 'P@ssw0rd',
       database: 'movie_gallery',
-      entities: [CredentialEntity,],
+      entities: typeOrmEntities,
       synchronize: true,
     }),
-    CredentialModule,
+    ...importModules,
   ],
   controllers: [AppController],
   providers: [AppService],
