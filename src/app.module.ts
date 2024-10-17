@@ -1,15 +1,14 @@
+import { config } from 'dotenv';
+config({ path: '.env' });
+config({ path: '.env.local' });
+
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmEntities } from './imports.entities';
 import { importModules } from './imports.modules';
-import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: ['.env.local', '.env'],
-    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
