@@ -27,9 +27,8 @@ export class GottenQueryDto {
     @IsOptional()
     @IsString()
     order?: OrderEnum.ASC | OrderEnum.DESC;
-
-    @IsOptional()
-    others?: any
+    
+    [key: string]: any; // Allow any additional conditions
 }
 
 export class GottenResponseDto<T> {

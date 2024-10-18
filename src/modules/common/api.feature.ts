@@ -1,6 +1,7 @@
 import { Repository } from 'typeorm';
 import { GottenQueryDto, GottenResponseDto } from './common.dto';
 import { OrderEnum } from './common.enum';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 export enum SearchWithEnum {
   STRING,
@@ -26,17 +27,28 @@ export class ApiFeature<T> {
       search,
       sort,
       order = OrderEnum.ASC,
+      ...additionalConditions
     } = queries;
     const _page = +page;
     const _limit = +limit;
-
+    
     const queryBuilder = this.repository.createQueryBuilder('entity');
+
+    // Handle additional conditions
+    if (additionalConditions) {
+      Object.keys(additionalConditions).forEach((key) => {
+        const value = additionalConditions[key];
+        if (value) {
+          queryBuilder.andWhere(`entity.${key} = :${key}`, { [key]: value });
+        }
+      });
+    }
 
     // Search functionality
     if (search) {
       let searchString = '';
 
-      searchWith.map((sw) => {
+      searchWith.forEach((sw) => {
         switch (sw.type) {
           case SearchWithEnum.NUMBER:
             searchString += `CAST(entity.${sw.column} AS text)`;
@@ -56,6 +68,10 @@ export class ApiFeature<T> {
 
     // Sorting functionality
     if (sort) {
+      if (!order) {
+        throw new HttpException('Kindly use sort with order: ASC or DESC !', HttpStatus.BAD_REQUEST);
+      }
+
       queryBuilder.orderBy(`entity.${sort}`, order || OrderEnum.ASC);
     }
 
