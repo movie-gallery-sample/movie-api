@@ -1,7 +1,3 @@
-import { config } from 'dotenv';
-config({ path: '.env' });
-config({ path: '.env.local' });
-
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmEntities } from './imports.entities';
