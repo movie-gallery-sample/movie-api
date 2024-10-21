@@ -23,7 +23,10 @@ import {
           break;
         
         default:
-          response.status(status).json(exception.getResponse());
+          response.status(status).json({
+            statusCode: status,
+            message: exception.getResponse()
+          });
       }
     }
   }

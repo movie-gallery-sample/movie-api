@@ -18,7 +18,6 @@ export class MovieController {
     @HttpCode(HttpStatus.OK)
     @ApiResponse({ status: HttpStatus.OK })
     async getAllMovies(@Query() queries: GottenQueryDto): Promise<GottenResponseDto<MovieDto>> {
-        console.log(queries);
         return this.movieService.getAll(queries);
     }
 
