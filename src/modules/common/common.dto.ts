@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsInt, IsNumberString, IsOptional, IsString, Min } from "class-validator";
 import { OrderEnum } from "./common.enum";
+import { HttpStatus } from "@nestjs/common";
 
 export class GottenQueryDto {
     @ApiProperty({ required: false, default: 1 })
@@ -42,5 +43,17 @@ export class GottenResponseDto<T> {
         this.total = total;
         this.page = page;
         this.lastPage = lastPage;
+    }
+}
+
+export class SentResponseDto {
+    statusCode: HttpStatus
+    message: string
+    data?: any
+
+    constructor(input: {statusCode: HttpStatus, message: string, payload?: any}) {
+        this.statusCode = input.statusCode;
+        this.message = input.message;
+        this.data = input.payload;
     }
 }

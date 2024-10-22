@@ -1,9 +1,9 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Patch, Post, Query, UseGuards } from "@nestjs/common";
 import { MovieService } from "./movie.service";
 import { JwtAuthGuard } from "../credentials/jwt-auth.guard";
 import { MovieDto, UpdateMovieDto } from "./movie.dto";
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { GottenResponseDto, GottenQueryDto } from "../common/common.dto";
+import { GottenResponseDto, GottenQueryDto, SentResponseDto } from "../common/common.dto";
 
 @ApiTags('movies')
 @Controller('movies')
@@ -37,5 +37,13 @@ export class MovieController {
     @ApiResponse({ status: HttpStatus.NOT_FOUND })
     async updateMovie(@Param('id') id: string, @Body() body: UpdateMovieDto): Promise<MovieDto> {
         return this.movieService.update({ id, partUpdate: body });
+    }
+
+    @Delete(':id')
+    @HttpCode(HttpStatus.OK)
+    @ApiResponse({ status: HttpStatus.OK })
+    @ApiResponse({ status: HttpStatus.NOT_FOUND })
+    async deleteMovie(@Param('id', new ParseUUIDPipe()) id: string): Promise<SentResponseDto> {
+        return this.movieService.delete(id);
     }
 }

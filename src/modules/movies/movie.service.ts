@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { MovieEntity } from './movie.entity';
 import { Repository } from 'typeorm';
 import { MovieDto } from './movie.dto';
-import { GottenQueryDto, GottenResponseDto } from '../common/common.dto';
+import { GottenQueryDto, GottenResponseDto, SentResponseDto } from '../common/common.dto';
 import { OrderEnum } from '../common/common.enum';
 import { ApiFeature, SearchWithEnum } from '../common/api.feature';
 
@@ -44,5 +44,15 @@ export class MovieService {
     Object.assign(movie, body.partUpdate);
 
     return this.movieRepository.save(movie);
+  }
+
+  async delete(id: string): Promise<SentResponseDto> {
+    if (!(await this.movieRepository.existsBy({ id: id })))  {
+      throw new HttpException('Not found movie', HttpStatus.NOT_FOUND);
+    }
+
+    const result = await this.movieRepository.delete(id);
+
+    return new SentResponseDto({ statusCode: HttpStatus.OK, message: 'Delete movie successfully'});
   }
 }
