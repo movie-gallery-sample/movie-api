@@ -22,3 +22,10 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Deploy using ssh
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USERNAME }}
+          key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
