@@ -16,6 +16,13 @@ import { typeOf } from 'src/utils/typeOf';
       const status = exception.getStatus();
 
       switch (status) {
+        case HttpStatus.UNAUTHORIZED:
+          response.status(status).json({
+            statusCode: status,
+            message: 'Your token is expired !',
+          });
+          break;
+
         case HttpStatus.FORBIDDEN:
           response.status(status).json({
             statusCode: status,

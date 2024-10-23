@@ -1,4 +1,4 @@
-import { ExecutionContext, Injectable } from '@nestjs/common';
+import { ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CredentialService } from './credential.service';
 import { Observable } from 'rxjs';
@@ -29,7 +29,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       const payload = this.jwtService.verify(token);
       return true;
     } catch (error) {
-      return false;
+      throw new UnauthorizedException();
     }
   }
 }
