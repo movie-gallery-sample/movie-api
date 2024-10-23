@@ -23,16 +23,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Create SSH key
-        run: |
-          mkdir -p ~/.ssh/
-          echo "$DEPLOY_KEY" > ~/.ssh/github_do.key
-          sudo chmod 600 ~/.ssh/github_do.key
-          ssh-keyscan -H $DEPLOY_SERVER > ~/.ssh/known_hosts
-        env:
-          DEPLOY_KEY: ${{ secrets.DEPLOYMENT_PRIVATE_KEY }}
-          DEPLOY_SERVER: ${{ secrets.DEPLOYMENT_HOST }}
-
       - name: Deploy using ssh
         uses: appleboy/ssh-action@v1.0.3
         with:
