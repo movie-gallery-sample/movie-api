@@ -53,5 +53,3 @@ jobs:
           host: ${{ secrets.DEPLOYMENT_HOST }}
           username: ${{ secrets.DEPLOYMENT_USERNAME }}
           key: ${{ secrets.DEPLOYMENT_PRIVATE_KEY }}
-          script: |
-            sudo systemctl reload nginx
