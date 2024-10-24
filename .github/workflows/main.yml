@@ -23,6 +23,27 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Set up Nginx
+        run: |
+          sudo apt update
+          sudo apt install -y nginx
+          echo "server {
+              listen 80;
+              server_name api.demo.lettutor.com;
+
+              location / {
+                  proxy_pass http://localhost:3001;
+                  proxy_http_version 1.1;
+                  proxy_set_header Upgrade \$http_upgrade;
+                  proxy_set_header Connection 'upgrade';
+                  proxy_set_header Host \$host;
+                  proxy_cache_bypass \$http_upgrade;
+              }
+          }" | sudo tee /etc/nginx/sites-available/api.demo.lettutor.com
+          sudo ln -s /etc/nginx/sites-available/api.demo.lettutor.com /etc/nginx/sites-enabled/
+          sudo nginx -t
+          sudo systemctl reload nginx
+
       - name: Deploy using ssh
         uses: appleboy/ssh-action@v1.0.3
         with:
