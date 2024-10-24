@@ -55,4 +55,4 @@ jobs:
           username: ${{ secrets.DEPLOYMENT_USERNAME }}
           key: ${{ secrets.DEPLOYMENT_PRIVATE_KEY }}
           run: |
-            sudo systemctl reload nginx
+            ls
