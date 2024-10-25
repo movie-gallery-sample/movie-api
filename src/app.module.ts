@@ -2,9 +2,17 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmEntities } from './imports.entities';
 import { importModules } from './imports.modules';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+
+console.log(__dirname);
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '..', 'uploads'),
+      serveRoot: '/uploads'
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
