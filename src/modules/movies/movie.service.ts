@@ -26,6 +26,16 @@ export class MovieService {
     });
   }
 
+  async getOne(id: string): Promise<MovieDto> {
+    const movie = await this.movieRepository.findOneBy({ id });
+
+    if (!movie) {
+      throw new HttpException('Not found movie !', HttpStatus.NOT_FOUND);
+    }
+
+    return movie;
+  }
+
   async create(movie: MovieDto): Promise<MovieDto> {
     return this.movieRepository.save(movie);
   }

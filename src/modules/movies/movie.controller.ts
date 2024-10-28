@@ -21,6 +21,14 @@ export class MovieController {
         return this.movieService.getAll(queries);
     }
 
+    @Get(':id')
+    @HttpCode(HttpStatus.OK)
+    @ApiResponse({ status: HttpStatus.OK })
+    @ApiResponse({ status: HttpStatus.NOT_FOUND })
+    async getOneMovie(@Param('id', new ParseUUIDPipe()) id: string): Promise<MovieDto> {
+        return this.movieService.getOne(id);
+    }
+
     @Post()
     @HttpCode(HttpStatus.CREATED)
     @ApiBody({ type: MovieDto })
@@ -35,7 +43,7 @@ export class MovieController {
     @ApiBody({ type: UpdateMovieDto })
     @ApiResponse({ status: HttpStatus.CREATED })
     @ApiResponse({ status: HttpStatus.NOT_FOUND })
-    async updateMovie(@Param('id') id: string, @Body() body: UpdateMovieDto): Promise<MovieDto> {
+    async updateMovie(@Param('id', new ParseUUIDPipe()) id: string, @Body() body: UpdateMovieDto): Promise<MovieDto> {
         return this.movieService.update({ id, partUpdate: body });
     }
 
