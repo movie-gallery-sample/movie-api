@@ -14,12 +14,17 @@ import { typeOf } from 'src/utils/typeOf';
       const ctx = host.switchToHttp();
       const response = ctx.getResponse<Response>();
       const status = exception.getStatus();
+      const exceptionResponse = exception.getResponse();
 
       switch (status) {
         case HttpStatus.UNAUTHORIZED:
+          const messageUnauthorized = typeOf(exceptionResponse) === 'string'
+            ? exceptionResponse
+            : 'Your token is expired !';
+
           response.status(status).json({
             statusCode: status,
-            message: 'Your token is expired !',
+            message: messageUnauthorized,
           });
           break;
 
@@ -31,14 +36,13 @@ import { typeOf } from 'src/utils/typeOf';
           break;
         
         default:
-          const exceptionResponse = exception.getResponse();
-          const message = typeOf(exceptionResponse) === 'string'
+          const messageDefault = typeOf(exceptionResponse) === 'string'
             ? exceptionResponse
             : (exceptionResponse as any).message || exceptionResponse;
 
           response.status(status).json({
             statusCode: status,
-            message: message,
+            message: messageDefault,
           });
       }
     }

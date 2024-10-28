@@ -40,9 +40,6 @@ export class CredentialController {
       body.email,
       body.password,
     );
-    if (!credential) {
-      throw new UnauthorizedException('Wrong email or password');
-    }
 
     const payload = { email: credential.email };
 

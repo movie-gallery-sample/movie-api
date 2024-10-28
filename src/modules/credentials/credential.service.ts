@@ -27,14 +27,20 @@ export class CredentialService {
   async validateUser(
     email: string,
     password: string,
-  ): Promise<CredentialEntity | null> {
+  ): Promise<CredentialEntity> {
     const credential = await this.credentialRepository.findOne({
       where: { email },
     });
-    if (credential && (await bcrypt.compare(password, credential.password))) {
+
+    if (!credential) {
+      throw new HttpException('Email does not exist !', HttpStatus.UNAUTHORIZED);
+    }
+
+    if (await bcrypt.compare(password, credential.password)) {
       return credential;
     }
-    return null;
+    
+    throw new HttpException('Wrong password !', HttpStatus.UNAUTHORIZED);
   }
 
   private addToBlacklist(token: string): void {
