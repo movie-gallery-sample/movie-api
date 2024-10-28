@@ -33,9 +33,6 @@ jobs:
             # Navigate to your app directory
             cd /var/www/api.demo.lettutor.com/movie-api
 
-            # Delete the application with PM2
-            pm2 delete movie-api
-
             # Install any new dependencies if package.json has changed
             rm -rf dist
             npm ci
@@ -44,7 +41,5 @@ jobs:
             npm run build
 
             # Restart the application with PM2
+            pm2 delete movie-api
             pm2 start dist/main.js --name "movie-api"
-
-            # Save the PM2 process list for restart on reboot
-            pm2 save
