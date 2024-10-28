@@ -32,14 +32,10 @@ jobs:
           script: |
             # Navigate to your app directory
             cd /var/www/api.demo.lettutor.com/movie-api
-
-            # Install any new dependencies if package.json has changed
-            rm -rf dist
+            
+            # Install dependencies and rebuild the app
             npm ci
-
-            # Run build
             npm run build
-
-            # Restart the application with PM2
-            pm2 delete movie-api
-            pm2 start dist/main.js --name "movie-api"
+            
+            # Reload the app with PM2 to avoid downtime
+            pm2 reload movie-api || pm2 start dist/main.js --name "movie-api"
