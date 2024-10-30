@@ -9,6 +9,6 @@ export const ImageFileInterceptor = FileInterceptor('file', {
       if (extname) {
         return callback(null, true);
       }
-      callback(HttpCommonException({message: 'Invalid file type ! Must be image !'}), false);
+      callback(HttpCommonException({message: 'Invalid file type ! Must be an image !'}), false);
     },
 });
