@@ -38,4 +38,4 @@ jobs:
             npm run build
             
             # Reload the app with PM2 to avoid downtime
-            pm2 reload movie-api || pm2 start dist/main.js --name "movie-api"
+            pm2 restart movie-api || pm2 start dist/main.js --name "movie-api"
