@@ -32,6 +32,9 @@ jobs:
           script: |
             # Navigate to your app directory
             cd /var/www/api.demo.lettutor.com/movie-api
+
+            # Pull the latest changes
+            git pull origin main
             
             # Install dependencies and rebuild the app
             npm ci
