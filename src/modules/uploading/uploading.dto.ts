@@ -26,3 +26,8 @@ export class FileUploadingDto {
     @ApiProperty({ type: 'string', format: 'binary' })
     file: any
 }
+
+export class FileRemovingDto {
+    @ApiProperty()
+    file: string;
+}

@@ -1,9 +1,9 @@
-import { Controller, HttpCode, HttpStatus, Post, UploadedFile, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Delete, HttpCode, HttpStatus, Post, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { UploadingService } from "./uploading.service";
 import { ImageFileInterceptor } from "./uploading.utils";
 import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { FileUploadingDto } from "./uploading.dto";
-import { FileInterceptor } from "@nestjs/platform-express";
+import { FileRemovingDto, FileUploadingDto } from "./uploading.dto";
+import { SentResponseDto } from "../common/common.dto";
 
 @ApiTags('uploading')
 @Controller('uploading')
@@ -14,13 +14,20 @@ export class UploadingController {
     @HttpCode(HttpStatus.CREATED)
     @UseInterceptors(ImageFileInterceptor)
     @ApiOperation({ summary: 'Upload a file' })
-    @ApiResponse({ status: 201, description: 'File uploaded successfully' })
-    @ApiResponse({ status: 400 })
+    @ApiResponse({ status: HttpStatus.CREATED, description: 'File uploaded successfully' })
+    @ApiResponse({ status: HttpStatus.BAD_REQUEST })
     @ApiConsumes('multipart/form-data')
-    @ApiBody({
-        type: FileUploadingDto,
-    })
+    @ApiBody({ type: FileUploadingDto })
     async uploadFile(@UploadedFile() file: Express.Multer.File) {
         return this.uploadingService.handleFileUploading(file);
+    }
+
+    @Delete()
+    @HttpCode(HttpStatus.OK)
+    @ApiResponse({ status: HttpStatus.OK })
+    @ApiResponse({ status: HttpStatus.NOT_FOUND })
+    @ApiBody({ type: FileRemovingDto })
+    async removeFile(@Body() file: FileRemovingDto): Promise<SentResponseDto> {
+        return this.uploadingService.removeFileUploading(file.file);
     }
 }
