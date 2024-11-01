@@ -35,6 +35,7 @@ jobs:
           script: |
             cd /var/www/api.demo.lettutor.com/movie-api
             git pull origin main
+            npm ci
 
       - name: Copy dist folder to VPS
         uses: appleboy/scp-action@v0.1.3
