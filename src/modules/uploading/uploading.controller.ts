@@ -22,7 +22,7 @@ export class UploadingController {
         return this.uploadingService.handleFileUploading(file);
     }
 
-    @Delete()
+    @Post('removed-single-file')
     @HttpCode(HttpStatus.OK)
     @ApiResponse({ status: HttpStatus.OK })
     @ApiResponse({ status: HttpStatus.NOT_FOUND })
