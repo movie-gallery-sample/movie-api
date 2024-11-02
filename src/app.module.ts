@@ -5,8 +5,6 @@ import { importModules } from './imports.modules';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 
-console.log(__dirname);
-
 @Module({
   imports: [
     ServeStaticModule.forRoot({

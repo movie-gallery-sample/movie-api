@@ -3,6 +3,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { MovieEntity } from "./movie.entity";
 import { MovieController } from "./movie.controller";
 import { MovieService } from "./movie.service";
+import { UploadingService } from "../uploading/uploading.service";
 
 @Module({
     imports: [
@@ -11,7 +12,7 @@ import { MovieService } from "./movie.service";
         ]),
     ],
     controllers: [MovieController],
-    providers: [MovieService],
+    providers: [MovieService, UploadingService],
 })
 
 export class MovieModule {}

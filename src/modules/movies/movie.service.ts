@@ -6,12 +6,14 @@ import { MovieDto } from './movie.dto';
 import { GottenQueryDto, GottenResponseDto, SentResponseDto } from '../common/common.dto';
 import { OrderEnum } from '../common/common.enum';
 import { ApiFeature, SearchWithEnum } from '../common/api.feature';
+import { UploadingService } from '../uploading/uploading.service';
 
 @Injectable()
 export class MovieService {
   constructor(
     @InjectRepository(MovieEntity)
     private readonly movieRepository: Repository<MovieEntity>,
+    private readonly uploadingService: UploadingService,
   ) {}
 
   async getAll(queries: GottenQueryDto): Promise<GottenResponseDto<MovieDto>> {
@@ -51,18 +53,27 @@ export class MovieService {
       delete body.partUpdate.id;
     }
 
+    const originalPosterUrl = movie.posterUrl;
+
     Object.assign(movie, body.partUpdate);
 
-    return this.movieRepository.save(movie);
+    const response = await this.movieRepository.save(movie);
+
+    if (body.partUpdate?.posterUrl && body.partUpdate.posterUrl !== originalPosterUrl) {
+      await this.uploadingService.removeFileUploading(originalPosterUrl);
+    }
+
+    return response;
   }
 
   async delete(id: string): Promise<SentResponseDto> {
-    if (!(await this.movieRepository.existsBy({ id: id })))  {
+    const movie = await this.movieRepository.findOneBy({ id: id });
+    if (!movie)  {
       throw new HttpException('Not found movie', HttpStatus.NOT_FOUND);
     }
 
-    const result = await this.movieRepository.delete(id);
-
+    await this.movieRepository.delete(id);
+    await this.uploadingService.removeFileUploading(movie.posterUrl);
     return new SentResponseDto({ statusCode: HttpStatus.OK, message: 'Delete movie successfully'});
   }
 }

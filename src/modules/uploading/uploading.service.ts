@@ -40,7 +40,6 @@ export class UploadingService {
             });
 
         } catch (err) {
-            console.log(err);
             throw HttpCommonException(err.message);
         }
     }
